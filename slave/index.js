@@ -8,6 +8,11 @@ var http = require('http').createServer(app);
 
 var clock = new Date('2021-01-01T00:00:00.00')
 
+setInterval(()=>{
+    clock.setMilliseconds(clock.getMilliseconds()+1000)
+    console.log(clock)
+},1000)
+
 var getHourSeconds = (date) => (parseInt(date.hour) * 3600) + (parseInt(date.minutes) * 60) + parseInt(date.seconds);
 
 app.use(cors())
