@@ -33,6 +33,10 @@ io.on('connection', (socket) => {
     console.log('A new user connected');
 });
 
+//hora del coordinador e intancias conectadas
+
+//metodo post para crear instancia
+
 function getUrls(){
     // return list of urls 'http:192.168.1.100:3000' 
 }
