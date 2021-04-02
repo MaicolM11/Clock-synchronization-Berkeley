@@ -22,11 +22,13 @@ io.on('connection', (socket) => {
 //metodo post para crear instancia
 app.post('/new_server', (req, res) => {
     portDocker++;
+    shell.exec(`sh new_server.sh ${portDocker}`)
     fs.appendFile('./urls.txt', `http://127.0.0.1:${portDocker}\n`, (err) => {
         if (err) throw err;
+        res.send(err);
         console.log('new server has been added!');
       });
-    shell.exec(`sh new_server.sh ${portDocker}`)
+    
     //res.send(`sh new_server.sh ${portDocker}`);
     res.send('added').sendStatus(200);
 })
