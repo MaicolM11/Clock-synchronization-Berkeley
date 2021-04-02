@@ -1,6 +1,6 @@
 const route = require('express').Router()
 
-global.clock = new Date('2021-01-01T00:00:00.00')
+global.clock = new Date()
 
 setInterval(() => {
     clock.setMilliseconds(clock.getMilliseconds() + 1000)

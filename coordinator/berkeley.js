@@ -4,8 +4,6 @@ const fs = require('fs')
 
 global.clock = new Date('2021-01-01T00:00:00.00')
 
-var getUrls = () => fs.readFileSync('./urls.txt', { encoding: "utf-8" }).split('\n')
-
 setInterval(() => {
     clock.setMilliseconds(clock.getMilliseconds() + 1000)
     console.log(clock)
@@ -14,7 +12,7 @@ setInterval(() => {
 route.post('/', (req, res) => {
     let allInstances = []
     var url = `/berkeley/difference?hour=${clock.getHours()}&minutes=${clock.getMinutes()}&seconds=${clock.getSeconds()}`
-    getUrls().forEach(x => allInstances.push(axios.get(x + url)));
+    getUrls().forEach(x => { allInstances.push(axios.get(x + url)) });
     axios.all(allInstances)
         .then(responseArr => {
             let avg = 0, i = 0, urls = [];
@@ -33,5 +31,11 @@ route.post('/', (req, res) => {
             console.log(err);
         });
 })
+
+function getUrls() {
+    var urls = fs.readFileSync('./urls.txt', { encoding: "utf-8" }).split('\n')
+    urls.pop()
+    return urls
+}
 
 module.exports = route
