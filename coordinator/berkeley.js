@@ -1,12 +1,10 @@
 const route = require('express').Router()
 const axios = require('axios')
 const fs = require('fs')
-
 global.clock = new Date('2021-01-01T00:00:00.00')
 
 setInterval(() => {
     clock.setMilliseconds(clock.getMilliseconds() + 1000)
-    console.log(clock)
 }, 1000)
 
 route.post('/', (req, res) => {
@@ -21,8 +19,10 @@ route.post('/', (req, res) => {
             getUrls().forEach(x => urls.push(
                 axios.post(x + '/berkeley/time', {
                     seconds: avg + responseArr[i++].data.difference
-                }
-                )))
+                }).then(()=>{
+                    axios.post(`${x}info`,{txt:`${x} diferencia: ${responseArr[(i-1)].data.difference} promedio: ${avg}`})
+                }).catch(()=>{})
+                ))
             axios.all(urls).catch((err) => { throw err })
             clock.setMilliseconds(clock.getMilliseconds() + avg * 1000)
             res.sendStatus(200)
