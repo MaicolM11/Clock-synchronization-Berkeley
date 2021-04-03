@@ -1,11 +1,10 @@
 const route = require('express').Router()
 const axios = require('axios')
 const fs = require('fs')
-global.clock = new Date('2021-01-01T00:00:00.00')
 
-setInterval(() => {
-    clock.setMilliseconds(clock.getMilliseconds() + 1000)
-}, 1000)
+global.clock = new Date()
+
+setInterval(() => clock.setMilliseconds(clock.getMilliseconds() + 1000), 1000)
 
 route.post('/', (req, res) => {
     let allInstances = []
@@ -18,11 +17,8 @@ route.post('/', (req, res) => {
             avg /= (responseArr.length + 1)
             getUrls().forEach(x => urls.push(
                 axios.post(x + '/berkeley/time', {
-                    seconds: avg + responseArr[i++].data.difference
-                }).then(()=>{
-                    axios.post(`${x}info`,{txt:`${x} diferencia: ${responseArr[(i-1)].data.difference} promedio: ${avg}`})
-                }).catch(()=>{})
-                ))
+                    adjustment: avg + responseArr[i++].data.difference
+                })))
             axios.all(urls).catch((err) => { throw err })
             clock.setMilliseconds(clock.getMilliseconds() + avg * 1000)
             res.sendStatus(200)
@@ -38,4 +34,4 @@ function getUrls() {
     return urls
 }
 
-module.exports = route
+module.exports = { route, getUrls }

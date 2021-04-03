@@ -1,4 +1,5 @@
 const route = require('express').Router()
+const logger = require('./logger');
 
 global.clock = new Date()
 
@@ -18,7 +19,10 @@ route.get('/difference', (req, res) => {
 
 // edit time from server
 route.post('/time', (req, res) => {
-    clock.setTime(clock.getTime() + (req.body.seconds * 1000))
+
+    let before_clock = new Date(clock.getTime())
+    clock.setTime(clock.getTime() + (req.body.adjustment  * 1000))
+    logger.info(`[COORDINATOR] Berkeley Coordinator has changed the time from ${before_clock.toLocaleTimeString()} to ${clock.toLocaleTimeString()}. Adjustment: ${req.body.adjustment} seg`)
     res.sendStatus(200)
 })
 
