@@ -1,12 +1,14 @@
 const express = require('express')
 const cors = require('cors');
 const shell = require('shelljs');
-const logger = require('./logger')
 const fs = require('fs')
 const path = require('path');
 const axios = require('axios');
+
+const logger = require('./logger')
 const berkeley = require('./berkeley')
-const m = require('./monitor');
+
+const monitor = require('./monitor')
 
 var app = express()
 var http = require('http').createServer(app);
@@ -50,6 +52,7 @@ app.post('/new_server', (req, res) => {
         var values = getInstances()
         values.push({ server: `http://127.0.0.1:${portDocker}`, state: true })
         fs.writeFileSync(path_instances, JSON.stringify(values));
+        monitor(`http://127.0.0.1:${portDocker}`);  // new ws
         logger.info('New server has been added on port ' + portDocker);
         res.sendStatus(200);
     } catch { res.sendStatus(500) }
