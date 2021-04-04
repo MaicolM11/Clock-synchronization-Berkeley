@@ -27,6 +27,7 @@ io.sockets.on('connection', (socket) => {
         monitoring()
         socket.emit('hours', `${global.clock.toLocaleTimeString()}`);
         socket.emit('servers-data', JSON.parse(fs.readFileSync(path_instances, { encoding: "utf-8" })));
+        socket.emit('servers-data2', global.servers);
     }, 1000);
 });
 
