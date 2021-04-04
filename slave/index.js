@@ -25,8 +25,6 @@ app.post('/time', (req, res) => {
     res.sendStatus(200)
 })
 
-app.get('/test', (req, res) => res.sendStatus(200))
-
 io.sockets.on('connection', (socket) => {
     setInterval(() => {
         let a = fs.readFileSync(path.join(__dirname, '/logs/information.log'))
