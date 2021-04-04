@@ -8,10 +8,15 @@ global.servers = {}
 
 var servers = getInstances()
 
-servers.forEach(element => {
-    var socket = io(element.server).connect();
-    global.servers[element.server] = false
-    socket.on('hours', data => global.servers[element.server] = data)
-    socket.on('disconnect', () => global.servers[element.server] = false);
+servers.forEach(server => {
+    addServer(server)
 });
 
+function addServer(url_server){
+    var socket = io(url_server).connect();
+    global.servers[url_server] = ''
+    socket.on('hours', data => global.servers[url_server] = data)
+    socket.on('disconnect', () => global.servers[url_server] = '');
+}
+
+module.exports = addServer

@@ -51,20 +51,14 @@ function App (){
     socket.on('servers-data',(data)=>{
         let event = window.event
         if(event) event.preventDefault()
-    })
-
-    socket.on('servers-data2',(data)=>{
-        let event = window.event
-        if(event) event.preventDefault()
         var temp=JSON.parse(JSON.stringify(data))
         var s=[]
         for (const key in temp) {
             if (Object.hasOwnProperty.call(temp, key)) {
-                s.push({server: key, time:(temp[key]==false)?'':temp[key],state:(temp[key]==false)?false:true})
+                s.push({server: key, time:temp[key],state:(temp[key]=='')?false:true})
             }
         }
         setServers(s)
-        console.log(servers)
     })
 
     return (

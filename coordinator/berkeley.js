@@ -1,6 +1,4 @@
-const route = require('express').Router()
 const axios = require('axios')
-const fs = require('fs')
 const logger = require('./logger')
 
 global.clock = new Date()
@@ -11,7 +9,7 @@ setInterval(() => berkeley(), 60000)
 function berkeley() {
     let allInstances = [], urls = getUrls(),
         path = `/berkeley/difference?hour=${clock.getHours()}&minutes=${clock.getMinutes()}&seconds=${clock.getSeconds()}`
-
+    if (urls.length == 0) return
     urls.forEach(x => { allInstances.push(axios.get(x + path)) });
     axios.all(allInstances)
         .then(responseArr => {
@@ -25,11 +23,11 @@ function berkeley() {
             axios.all(allInstances).catch((err) => { throw err })
             clock.setMilliseconds(clock.getMilliseconds() + avg * 1000)
             doLogs(urls, responseArr, avg);
-        }).catch((err) => logger.error('[BERKELEY-ERROR] The algorithm has failed. '+  err.toString()));
+        }).catch((err) => logger.error('[BERKELEY-ERROR] The algorithm has failed. ' + err.toString()));
 }
 
 function doLogs(urls, responseArr, avg) {
-    logger.info('[BERKELEY-INIT] server difference')
+    logger.info(`[BERKELEY-INIT] The time was adjusted to ${urls.length} clients`)
     for (let i = 0; i < urls.length; i++) {
         logger.info(`[BERKELEY-SERVER] ${urls[i]} ${responseArr[i].data.difference}`)
     }
@@ -37,8 +35,9 @@ function doLogs(urls, responseArr, avg) {
 }
 
 function getUrls() {
-    var values = JSON.parse(fs.readFileSync('./instances.json', { encoding: "utf-8" }).toString());
-    return values.filter(x => x.state).map(x => x.server)
+    var urls = []
+    for (var [key, value] of Object.entries(servers)) {
+        if (value.length > 0) urls.push(key)
+    }
+    return urls
 }
-
-module.exports = { route, getUrls }

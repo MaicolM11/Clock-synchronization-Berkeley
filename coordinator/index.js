@@ -3,10 +3,9 @@ const cors = require('cors');
 const shell = require('shelljs');
 const fs = require('fs')
 const path = require('path');
-const axios = require('axios');
 
 const logger = require('./logger')
-const berkeley = require('./berkeley')
+require('./berkeley')
 
 const monitor = require('./monitor')
 
@@ -22,27 +21,16 @@ var getInstances = () => JSON.parse(fs.readFileSync(path_instances, { encoding: 
 
 app.use(cors())
 app.use(express.json())
-app.use('/berkeley', berkeley.route)
 app.use(express.static(path.join(__dirname, 'public')))
 
 io.sockets.on('connection', (socket) => {
     setInterval(() => {
         let a = fs.readFileSync(path.join(__dirname, '/logs/information.log'))
         socket.emit('hours', `${global.clock.toLocaleTimeString()}`);
-        socket.emit('servers-data2', global.servers);
+        socket.emit('servers-data', global.servers);
         socket.emit('log', a.toString())
     }, 1000);
 });
-
-async function monitoring() {
-    var values = await getInstances()
-    for (let i = 0; i < values.length; i++) {
-        let server = values[i].server
-        let state = await axios.get(`${server}/test`).then(() => true).catch(() => false)
-        values[i].state = state
-    }
-    fs.writeFileSync(path_instances, JSON.stringify(values));
-}
 
 //metodo post para crear instancia
 app.post('/new_server', (req, res) => {
@@ -50,7 +38,7 @@ app.post('/new_server', (req, res) => {
         portDocker++;
         shell.exec(`sh new_server.sh ${portDocker}`)
         var values = getInstances()
-        values.push({ server: `http://127.0.0.1:${portDocker}`, state: true })
+        values.push(`http://127.0.0.1:${portDocker}`)
         fs.writeFileSync(path_instances, JSON.stringify(values));
         monitor(`http://127.0.0.1:${portDocker}`);  // new ws
         logger.info('New server has been added on port ' + portDocker);
@@ -59,6 +47,5 @@ app.post('/new_server', (req, res) => {
 })
 
 http.listen(port, () => {
-
-    console.log(`listening on port: ${port}`);
+    console.log(`listening on port: ${port}`);   
 });
