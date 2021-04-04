@@ -6,6 +6,7 @@ const fs = require('fs')
 const path = require('path');
 const axios = require('axios');
 const berkeley = require('./berkeley')
+const m = require('./monitor');
 
 var app = express()
 var http = require('http').createServer(app);
@@ -24,10 +25,10 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 io.sockets.on('connection', (socket) => {
     setInterval(() => {
-        monitoring()
+        let a = fs.readFileSync(path.join(__dirname, '/logs/information.log'))
         socket.emit('hours', `${global.clock.toLocaleTimeString()}`);
-        socket.emit('servers-data', JSON.parse(fs.readFileSync(path_instances, { encoding: "utf-8" })));
         socket.emit('servers-data2', global.servers);
+        socket.emit('log', a.toString())
     }, 1000);
 });
 

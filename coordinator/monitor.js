@@ -11,7 +11,7 @@ var servers = getInstances()
 
 servers.forEach(element => {
     var socket = io(element.server).connect();
-    servers[element.server] = false
-    socket.on('hours', data => servers[element.server] = data)
-    socket.on('disconnect', () => servers[element.server] = false);
+    global.servers[element.server] = false
+    socket.on('hours', data => global.servers[element.server] = data)
+    socket.on('disconnect', () => global.servers[element.server] = false);
 });

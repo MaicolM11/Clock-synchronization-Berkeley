@@ -61,8 +61,8 @@ function App (){
                                 onClick={changeTime}>ENVIAR</button>
                         </div>
                         <div class="card mt-5" >
-                            <div class="card-header">
-                                LOGS
+                            <div class="card-header text-center">
+                                <h1>LOGS</h1>
                             </div>
                             <div id="log">
                                 {lines.map(element=>{

@@ -1,11 +1,1 @@
-[
-    {
-        "server": "http://127.0.0.1:3000",
-        "state": true
-    },
-    {
-        "server": "http://127.0.0.1:3001",
-        "state": true
-    }
-    
-]
+[{"server":"http://127.0.0.1:3000","state":false},{"server":"http://127.0.0.1:3001","state":false}]
