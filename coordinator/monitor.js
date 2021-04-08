@@ -6,11 +6,9 @@ var getInstances = () => JSON.parse(fs.readFileSync('./instances.json', { encodi
 // {  'http://127.0.0.1:3000': '8:21:08 p. m.',  'http://127.0.0.1:3001': false  }
 global.servers = {}
 
-var servers = getInstances()
+var ips = getInstances()
 
-servers.forEach(server => {
-    addServer(server)
-});
+ips.forEach(ip => addServer(ip));
 
 function addServer(url_server){
     var socket = io(url_server).connect();
