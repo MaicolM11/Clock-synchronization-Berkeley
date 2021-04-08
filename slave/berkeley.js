@@ -10,7 +10,7 @@ setInterval(() => {
 var getHourSeconds = (date) => (parseInt(date.hour) * 3600) + (parseInt(date.minutes) * 60) + parseInt(date.seconds);
 
 // obtener diferencia con la hora que llega por parametro
-// http://localhost:3000/difference?hour=8&minutes=30&seconds=10
+// http://localhost:4001/berkeley/difference?hour=8&minutes=30&seconds=10
 route.get('/difference', (req, res) => {
     let myDate = { hour: clock.getHours(), minutes: clock.getMinutes(), seconds: clock.getSeconds() }
     let diff = getHourSeconds(req.query) - getHourSeconds(myDate)

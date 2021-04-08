@@ -1,0 +1,124 @@
+swagger: "2.0"
+info:
+  description: "It is a centralized algorithm, in which the server will be chosen among all the computers that are connected in the environment, the master asks the slaves for their time periodically, once the time is received from the slaves, the Berkeley algorithm will simply estimate its time from all the computers connected, it will estimate the drift that each clock has and will proceed to send the necessary correction in each case. - This application use Docker, Nodejs, React."
+  version: "1.0.0"
+  title: "Berkeley Algorithm"
+  termsOfService: "https://moodle2.uptc.edu.co/presencial/course/view.php?id=1806&section=8"
+  contact:
+    email: "MichaelJohanAndres@uptc.edu.co"
+host: "localhost:4001"
+
+tags:
+- name: "slave"
+  description: "Slave API"
+  
+- name: "Coordinator"
+  description: "Coordinator API"
+  
+
+    
+schemes:
+- "http"
+paths:
+  /time:
+    post:
+      tags:
+      - "slave"
+      summary: "edit time from user"
+      description: ""
+      operationId: "timeIndex"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Object with time in seconds for edit from user"
+        required: true
+        schema:
+          $ref: "#/definitions/Time"
+      responses:
+        "200":
+          description: "successful operation"
+        "500":
+          description: "Error Internal Server"
+  /berkeley/difference:
+    get:
+      tags:
+      - "slave"
+      summary: "Obtain differecene with a time"
+      description: ""
+      operationId: "differenceBerkeleySlave"
+      parameters:
+      - name: "hour"
+        in: "query"
+        description: "hours that arrive from coordinator"
+        required: true
+        type: "integer"
+        format: "int"
+      - name: "minutes"
+        in: "query"
+        description: "minutes that arrive from coordinator"
+        required: true
+        type: "integer"
+        format: "int"
+      - name: "seconds"
+        in: "query"
+        description: "seconds that arrive from coordinator"
+        required: true
+        type: "integer"
+        format: "int"
+      responses:
+        "200":
+          description: "successful operation"
+        "500":
+          description: "Error Internal Server"
+  /berkeley/time:
+    post:
+      tags:
+      - "slave"
+      summary: "edit time from server"
+      description: ""
+      operationId: "timeBerkeleySlave"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "adjustment in seconds to edit time from server"
+        required: true
+        schema:
+          $ref: "#/definitions/BerkeleyTime"
+      responses:
+        "200":
+          description: "successful operation"
+        "500":
+          description: "Error Internal Server"
+  /new_server:
+    post:
+      tags:
+      - "Coordinator"
+      summary: "Add a new Server and run this"
+      description: ""
+      operationId: "addServer"
+      responses:
+        "200":
+          description: "successful operation"
+        "500":
+          description: "Error Internal Server"
+          
+          
+definitions:
+  Time:
+    type: "object"
+    properties:
+      time:
+        type: "string"
+        example: "21:12"
+    xml:
+      name: "timeSlave"
+      
+  BerkeleyTime:
+    type: "object"
+    properties:
+      adjustment:
+        type: "integer"
+        format: "int"
+        example: "10"
+    xml:
+      name: "timeSlave"

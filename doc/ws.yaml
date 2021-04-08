@@ -1,0 +1,57 @@
+asyncapi: 2.0.0
+info:
+  title: Berkeley Algorithm
+  version: 1.0.0
+  description: It is a centralized algorithm, in which the server will be chosen among all the computers that are connected in the environment, the master asks the slaves for their time periodically, once the time is received from the slaves, the Berkeley algorithm will simply estimate its time from all the computers connected, it will estimate the drift that each clock has and will proceed to send the necessary correction in each case. - This application use Docker, Nodejs, React.
+channels:
+  user/coordinator:
+    subscribe:
+      message:
+        $ref: '#/components/messages/Coordinator'
+  usedr/slave:
+    subscribe:
+      message:
+        $ref: '#/components/messages/Slave'
+servers:
+    slave:
+      url: localhost:4001
+      protocol: ws
+      description: "Slave server"
+     
+    coordinator:
+      url: localhost:5000
+      protocol: ws
+      description: "Coordinator server"
+      
+components:
+  messages:
+    Coordinator:
+      payload:
+        type: object
+        properties:
+          hour:
+            type: string
+            description: hour from coordinator
+            example: "12:59:00 am"
+          servers-data:
+            type: object
+            description: Info of the all slaves
+            example: { 'http://127.0.0.1:4001': '8:41:00 am',
+'http://127.0.0.1:4002': ''}
+          logs:
+            type: string
+            description: logs
+            example: "[INFO]  6/4/2021, 9:12:00 p. m. : New server has been added on port 4000"
+    Slave:
+      payload:
+        type: object
+        properties:
+          hour:
+            type: string
+            description: hour from coordinator
+            example: "8:28:00 am"
+          logs:
+            type: string
+            description: logs
+            example: "[INFO]  6/4/2021, 9:12:00 p. m. : [USER] The user has changed the time from 6:56:53 p. m. to 9:12:00 p. m.
+"
